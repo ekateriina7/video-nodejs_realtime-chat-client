@@ -6,37 +6,34 @@ import { MessageList } from './MessageList.jsx';
 
 const DataLoader = ({ onData }) => {
   const loadData = async () => {
-
-      const response = await axios.get('http://localhost:3005/messages');
-      onData(response.data);
-      loadData()
+    const response = await axios.get('http://localhost:3005/messages');
+    onData(response.data);
+    loadData();
   };
 
-  
   useEffect(() => {
-    const evtSource = new EventSource("http://localhost:3005/messages");
+    const evtSource = new EventSource('http://localhost:3005/messages');
 
-evtSource.onmessage = (e) => {
-  onData(JSON.parse(e.data))
-};
+    evtSource.onmessage = (e) => {
+      onData(JSON.parse(e.data));
+    };
+    return () => {
+      evtSource.close()
+    }
   }, []);
 
-  return (
-    <h1 className="title">
-      Chat application
-    </h1>
-  );
+  return <h1 className='title'>Chat application</h1>;
 };
 
 export function App() {
   const [messages, setMessages] = useState([]);
 
   function saveData(data) {
-    setMessages(messages=>[data, ...messages]);
+    setMessages((messages) => [data, ...messages]);
   }
 
   return (
-    <section className="section content">
+    <section className='section content'>
       <DataLoader onData={saveData} />
       <MessageForm />
       <MessageList messages={messages} />
