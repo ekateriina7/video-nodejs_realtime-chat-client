@@ -14,7 +14,11 @@ const DataLoader = ({ onData }) => {
 
   
   useEffect(() => {
-    loadData();
+    const evtSource = new EventSource("http://localhost:3005/messages");
+
+evtSource.onmessage = (e) => {
+  onData(JSON.parse(e.data))
+};
   }, []);
 
   return (
@@ -28,7 +32,7 @@ export function App() {
   const [messages, setMessages] = useState([]);
 
   function saveData(data) {
-    setMessages(data);
+    setMessages(messages=>[data, ...messages]);
   }
 
   return (
