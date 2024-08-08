@@ -1,29 +1,43 @@
-// #region imports 
-import { useState } from 'react';
-import './App.css'
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import './App.css';
 import { MessageForm } from './MessageForm.jsx';
 import { MessageList } from './MessageList.jsx';
-// #endregion
 
-const DataLoader = () => {
+const DataLoader = ({ onData }) => {
+  const loadData = async () => {
+    try {
+      const response = await axios.get('http://localhost:3005/messages');
+      onData(response.data);
+    } catch (error) {
+      console.error('Error loading data:', error);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+    setInterval(loadData, 2000)
+  }, [])
+
   return (
-    <h1 className="title">Chat application</h1>
+    <h1 className="title">
+      Chat application
+    </h1>
   );
 };
 
 export function App() {
   const [messages, setMessages] = useState([]);
 
-  function saveData(message) {
-    // update messages here
+  function saveData(data) {
+    setMessages(data);
   }
 
   return (
     <section className="section content">
       <DataLoader onData={saveData} />
-
       <MessageForm />
       <MessageList messages={messages} />
     </section>
-  )
+  );
 }
