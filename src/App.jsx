@@ -6,18 +6,16 @@ import { MessageList } from './MessageList.jsx';
 
 const DataLoader = ({ onData }) => {
   const loadData = async () => {
-    try {
+
       const response = await axios.get('http://localhost:3005/messages');
       onData(response.data);
-    } catch (error) {
-      console.error('Error loading data:', error);
-    }
+      loadData()
   };
 
+  
   useEffect(() => {
     loadData();
-    setInterval(loadData, 2000)
-  }, [])
+  }, []);
 
   return (
     <h1 className="title">
